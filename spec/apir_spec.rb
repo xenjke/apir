@@ -510,6 +510,12 @@ describe Apir::Request do
       expect(Apir::Request.present_cookie_jar(request.cookie_jar)).to include('referrer=test; referrer2=test2')
     end
 
+    it 'response time' do
+      stub_request(:any, current_url).to_return { |request| { body: request.body, headers: request.headers } }
+      request.get!
+      expect(request.request_time).not_to be_nil
+      expect(request.time_taken).to be_a(Numeric)
+    end
   end
 
 end
