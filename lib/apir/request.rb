@@ -8,9 +8,12 @@ require 'active_support/all'
 require 'apir/reporting'
 
 module Apir
-# класс реквеста
+
+  # request class callable as #new
+  # or could be used as class extension
   class Request
     include RequestReporting
+
     attr_accessor :params
     attr_accessor :type, :uri, :query, :headers, :method, :response, :body, :body_type
     attr_accessor :time_taken, :request_time
@@ -29,6 +32,7 @@ module Apir
     end
 
     # subclasses should implement
+    # hook to be called when the request is completed
     def post_initialize
       # raise NotImplementedError
     end
@@ -47,17 +51,13 @@ module Apir
       send_request
     end
 
-    # @return [Self] Повторяет последний вызов метода
-    # со всеми сохраненными параметрами и типом запроса
+    # executing self one more time
     def redo!
       send_request
     end
 
     def cookies
       cookies_array = @cookie_jar.to_a.join(';').split(';').map { |c| c.split('=') }
-
-      # если кука приходит без значения - она сохраняется в массиве без пары, и to_h падает
-      # докидываю в массив пустой элемент в этом случае
       cookies_array.each { |e| e[1] = '' if e.count == 1 }
       cookies_array.to_h
     end
@@ -72,6 +72,7 @@ module Apir
       uri.to_s
     end
 
+    # presenting HTTP::CookieJar as a curl'y -H string
     def self.present_cookie_jar(jar)
       cookies_array       = jar.to_a
       curl_cookies_string = cookies_array.map(&:to_s).join('; ')
@@ -90,7 +91,6 @@ module Apir
     end
 
     def default_headers
-      # дефолтные значения заголовков
       # todo russian comments
       # todo content_type management
       # todo user_agent management
@@ -106,12 +106,20 @@ module Apir
     end
 
     # may be overridden to present logging with instance variables
+    #
+    #
+    # i.e.
+    #
+    #
+    # log(url, ">> #{@type}-request")
+    # log(self.class.present_cookie_jar(@cookie_jar), '>> cookies-jar') unless @cookie_jar.cookies.empty?
+    # yield if block_given?
+    # log(response_cookies_string, '<< cookies') unless raw_response.cookies.empty?
+    # log("#{@raw_response.code}. #{@time_taken} ms.", '<< response')
+    #
+    #
     def with_logging
-      # log(url, ">> #{@type}-request")
-      # log(self.class.present_cookie_jar(@cookie_jar), '>> cookies-jar') unless @cookie_jar.cookies.empty?
       yield if block_given?
-      # log(response_cookies_string, '<< cookies') unless raw_response.cookies.empty?
-      # log("#{@raw_response.code}. #{@time_taken} ms.", '<< response')
     end
 
     def send_request
@@ -119,7 +127,7 @@ module Apir
       raise report_data if raw_response.code > 500
       parse_json_response
       #todo post_initialize documentation
-      post_initialize # subclasses should implement
+      post_initialize
       self
     end
 
@@ -144,7 +152,7 @@ module Apir
       @raw_response = RestClient::Request.execute(req_opts) { |response, _request, _result| response }.force_encoding('UTF-8')
       @raw_request  = @raw_response.request
       @time_taken   = time_from(@request_time, Time.now.utc)
-    rescue RestClient::RequestTimeout => e # у RestClient классы исключений генерируются на лету, отсюда ошибка не видимости класса
+    rescue RestClient::RequestTimeout => e
       message = "#{e}. #{timeout} seconds."
       raise report_data(message)
     end
