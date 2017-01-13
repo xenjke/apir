@@ -215,7 +215,7 @@ describe Apir::Request do
     let(:current_url) { requests[2][1] }
 
     it 'not raise exception' do
-      expect { request.get! }.not_to raise_error(RuntimeError)
+      expect { request.get! }.not_to raise_error
     end
 
   end
@@ -476,8 +476,9 @@ describe Apir::Request do
       stub_request(:any, current_url).to_return { |request| { body: request.body, headers: request.headers } }
       request.body = data.clone
       request.post!(:string)
-      expect(request.report_data('my message')).to include(current_url)
-      expect(request.report_data('my message')).to include('my message')
+      report = request.report_data('my message')
+      expect(report).to include(current_url)
+      expect(report).to include('my message')
     end
 
     it 'request time' do
