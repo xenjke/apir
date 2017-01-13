@@ -107,7 +107,7 @@ module Apir
       # todo user_agent management
       { content_type: 'application/json; charset=utf-8',
         cookies:      prepare_cookies,
-        user_agent:   'OTT-Ruby-Testing-Framework' }
+        user_agent:   'APIR-Ruby-Testing-Framework' }
     end
 
     def parse_json_response
