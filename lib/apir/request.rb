@@ -3,6 +3,7 @@ require 'http-cookie'
 require 'rest-client'
 require 'json'
 require 'date'
+# todo can active support be replaced for hash compact?
 require 'active_support/all'
 
 require 'apir/reporting'
@@ -91,9 +92,8 @@ module Apir
     end
 
     def default_headers
-      # todo russian comments
-      # todo content_type management
-      # todo user_agent management
+      # todo content_type example
+      # todo user_agent example
       { content_type: 'application/json; charset=utf-8',
         cookies:      prepare_cookies,
         user_agent:   'APIR-Ruby-Testing-Framework' }
@@ -106,16 +106,15 @@ module Apir
     end
 
     # may be overridden to present logging with instance variables
-    #
-    #
     # i.e.
     #
-    #
-    # log(url, ">> #{@type}-request")
-    # log(self.class.present_cookie_jar(@cookie_jar), '>> cookies-jar') unless @cookie_jar.cookies.empty?
-    # yield if block_given?
-    # log(response_cookies_string, '<< cookies') unless raw_response.cookies.empty?
-    # log("#{@raw_response.code}. #{@time_taken} ms.", '<< response')
+    # def with_logging #<-- overridden one
+    #   log(url, ">> #{@type}-request")
+    #   log(self.class.present_cookie_jar(@cookie_jar), '>> cookies-jar') unless @cookie_jar.cookies.empty?
+    #   yield if block_given?
+    #   log(response_cookies_string, '<< cookies') unless raw_response.cookies.empty?
+    #   log("#{@raw_response.code}. #{@time_taken} ms.", '<< response')
+    # end
     #
     #
     def with_logging
