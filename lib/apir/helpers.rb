@@ -34,8 +34,6 @@ def log(string, log_type=nil)
                       type.colorize(:red)
                     when 'request'
                       type.colorize(:cyan)
-                    when 'PurchaseHelper'
-                      type.colorize(:blue)
                     when /warning/i
                       type.colorize(:orange)
                     when /<<|>>|\++/
