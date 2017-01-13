@@ -74,7 +74,8 @@ module Apir
 
     def self.present_cookie_jar(jar)
       cookies_array       = jar.to_a
-      curl_cookies_string = cookies_array.map(&:to_s).join('; ') + ';'
+      curl_cookies_string = cookies_array.map(&:to_s).join('; ')
+      curl_cookies_string + ';' if cookies_array.size == 1
     end
 
     private
@@ -116,21 +117,19 @@ module Apir
       nil
     end
 
-    # noinspection RubocopInspection
     def with_logging
-      log(url, ">> #{@type}-request")
-      log(self.class.present_cookie_jar(@cookie_jar), '>> cookies-jar') unless @cookie_jar.cookies.empty?
-
-      @request_time = Time.now.utc
+      # log(url, ">> #{@type}-request")
+      # log(self.class.present_cookie_jar(@cookie_jar), '>> cookies-jar') unless @cookie_jar.cookies.empty?
       yield if block_given?
-      @time_taken = time_from(@request_time, Time.now.utc)
-
-      log(response_cookies_string, '<< cookies') unless raw_response.cookies.empty?
-      log("#{@raw_response.code}. #{@time_taken} ms.", '<< response')
+      # log(response_cookies_string, '<< cookies') unless raw_response.cookies.empty?
+      # log("#{@raw_response.code}. #{@time_taken} ms.", '<< response')
     end
 
     def send_request
+      @request_time = Time.now.utc
       with_logging { http_sender }
+      @time_taken = time_from(@request_time, Time.now.utc)
+
       raise report_data if raw_response.code > 500
       parse_json_response
       #todo post_initialize documentation
