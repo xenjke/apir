@@ -1,0 +1,31 @@
+SpaceAroundEqualsInParameterDefault:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 140
+
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/AbcSize:
+  Max: 21
+
+Metrics/ClassLength:
+  Max: 150
+
+Metrics/CyclomaticComplexity:
+  Max: 14
+
+Metrics/PerceivedComplexity:
+  Max: 10
+
+Style/AsciiComments:
+  Enabled: false
+
+CaseIndentation:
+  # Valid values are: case, end
+  IndentWhenRelativeTo: end
+  IndentOneStep: true
+
+AllCops:
+  TargetRubyVersion: 2.3
