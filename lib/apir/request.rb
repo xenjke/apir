@@ -84,19 +84,6 @@ module Apir
       @cookie_jar
     end
 
-    def default_cookies
-      #todo default cookies management
-      # [HTTP::Cookie.new(name:   'ENVID',
-      #                   value:  @config.environment,
-      #                   domain: '.onetwotrip.com',
-      #                   path:   '/'),
-      #  HTTP::Cookie.new(name:   'ENVID',
-      #                   value:  @config.environment,
-      #                   domain: '.twiket.com',
-      #                   path:   '/')]
-      []
-    end
-
     def prepare_headers
       default_headers.merge(@headers)
     end
@@ -117,6 +104,7 @@ module Apir
       nil
     end
 
+    # may be overridden to present logging with instance variables
     def with_logging
       # log(url, ">> #{@type}-request")
       # log(self.class.present_cookie_jar(@cookie_jar), '>> cookies-jar') unless @cookie_jar.cookies.empty?
