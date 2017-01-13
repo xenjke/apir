@@ -115,10 +115,7 @@ module Apir
     end
 
     def send_request
-      @request_time = Time.now.utc
       with_logging { http_sender }
-      @time_taken = time_from(@request_time, Time.now.utc)
-
       raise report_data if raw_response.code > 500
       parse_json_response
       #todo post_initialize documentation
@@ -136,6 +133,7 @@ module Apir
 
     def http_sender(timeout=120)
       #todo default timeout management
+      @request_time = Time.now.utc
       req_opts      = { method:   @type,
                         url:      uri.to_s,
                         payload:  prepare_body(@body, @body_type),
@@ -145,6 +143,7 @@ module Apir
                         password: authorisation[:password] }
       @raw_response = RestClient::Request.execute(req_opts) { |response, _request, _result| response }.force_encoding('UTF-8')
       @raw_request  = @raw_response.request
+      @time_taken   = time_from(@request_time, Time.now.utc)
     rescue RestClient::RequestTimeout => e # у RestClient классы исключений генерируются на лету, отсюда ошибка не видимости класса
       message = "#{e}. #{timeout} seconds."
       raise report_data(message)
