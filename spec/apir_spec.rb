@@ -499,6 +499,17 @@ describe Apir::Request do
       expect(request.report_data).to include('empty_value=;')
     end
 
+    it 'presenting cookie jar' do
+      request.cookie_jar << HTTP::Cookie.new(name:   'referrer', value: 'test',
+                                             domain: '.contoso.com',
+                                             path:   '/')
+      expect(Apir::Request.present_cookie_jar(request.cookie_jar)).to include('referrer', 'test')
+      request.cookie_jar << HTTP::Cookie.new(name:   'referrer2', value: 'test2',
+                                             domain: '.contoso.com',
+                                             path:   '/')
+      expect(Apir::Request.present_cookie_jar(request.cookie_jar)).to include('referrer=test; referrer2=test2')
+    end
+
   end
 
 end

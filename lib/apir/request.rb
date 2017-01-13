@@ -75,7 +75,8 @@ module Apir
     def self.present_cookie_jar(jar)
       cookies_array       = jar.to_a
       curl_cookies_string = cookies_array.map(&:to_s).join('; ')
-      curl_cookies_string + ';' if cookies_array.size == 1
+      curl_cookies_string << ';' if cookies_array.size == 1
+      curl_cookies_string
     end
 
     private
