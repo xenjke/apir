@@ -33,6 +33,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "webmock", '~> 2.3.1'
 
   spec.add_runtime_dependency 'rest-client', '~> 2.0'
-  spec.add_runtime_dependency 'colorize'
   spec.add_runtime_dependency 'activesupport'
 end
