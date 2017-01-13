@@ -1,3 +1,7 @@
+[![Travis](https://travis-ci.org/xenjke/apir.svg?branch=master)](https://travis-ci.org/xenjke/apir)
+[![Coverage](https://coveralls.io/repos/github/xenjke/apir/badge.svg?branch=master)](https://coveralls.io/github/xenjke/apir?branch=master)
+
+
 # Apir
 
 Module and Request class to help building RequestObject testing framework
