@@ -1,8 +1,7 @@
 module Apir
-# модуль функций, для придания возможности
-# классу репортовать свои параметры
+# reporting module
   module RequestReporting
-    # сам класс репорта
+    # reporting class
     class RequestReport
       def initialize(request, response, message=nil)
         @request  = request
@@ -78,6 +77,8 @@ module Apir
       curl_string = "curl '#{url}' #{curl_make_headers} #{curl_make_body} -i"
       curl_string.gsub(/\s+/, ' ').strip
     end
+
+    private
 
     def curl_make_headers
       headers_clone          = headers.clone
