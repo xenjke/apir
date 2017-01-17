@@ -4,17 +4,6 @@ require 'apir'
 
 WebMock.disable!
 
-RSpec.configure do |config|
-  config.before(:each) do
-    requests.each do |code, url, body|
-      stub_request(:any, url).
-          to_return(status: code, body: body)
-    end
-
-
-  end
-end
-
 describe 'extending class with apir' do
   before(:all) do
     WebMock.enable!

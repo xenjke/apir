@@ -5,6 +5,8 @@ require 'apir/version'
 
 Gem::Specification.new do |spec|
   spec.name    = "apir"
+  spec.required_ruby_version = ">= 2.2.2"
+
   spec.version = Apir::VERSION
   spec.authors = ["Andrey Shulzhenko"]
   spec.email   = ["imnot.xen@gmail.com"]
@@ -32,6 +34,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "webmock", '~> 2.3.1'
 
-  spec.add_runtime_dependency 'rest-client', '~> 2.0'
-  spec.add_runtime_dependency 'activesupport' '~> 5.0'
+  spec.add_dependency 'rest-client', '~> 2.0'
+  spec.add_dependency 'activesupport', '~> 5.0'
 end
