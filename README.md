@@ -1,7 +1,6 @@
 [![Travis](https://travis-ci.org/xenjke/apir.svg?branch=master)](https://travis-ci.org/xenjke/apir)
 [![Coverage](https://coveralls.io/repos/github/xenjke/apir/badge.svg?branch=master)](https://coveralls.io/github/xenjke/apir?branch=master)
 
-
 # Apir
 
 Module and Request class to help building RequestObject testing framework
@@ -36,7 +35,7 @@ Lock the gem version strictly to be safe from my destructive actions.
 
     class GetWeather
       include Apir::Request
-      # todo better class example
+      
       def initialize(**args)
         @url = 'https://weather.com'
         super(@url, args)
@@ -64,7 +63,7 @@ Lock the gem version strictly to be safe from my destructive actions.
       def sun_factor
         result[:sunFactor]
       end
-
+      
     end
     request = GetWeather.new
     request.sunny?('London')

@@ -1,15 +1,15 @@
+# frozen_string_literal: true
 require 'addressable/uri'
 require 'http-cookie'
 require 'rest-client'
 require 'json'
 require 'date'
-# todo can active support be replaced for hash compact?
+# TODO: can active support be replaced for hash compact?
 require 'active_support/all'
 
 require 'apir/reporting'
 
 module Apir
-
   # request class callable as #new
   # or could be used as class extension
   class Request
@@ -92,8 +92,8 @@ module Apir
     end
 
     def default_headers
-      # todo content_type example
-      # todo user_agent example
+      # TODO: content_type example
+      # TODO: user_agent example
       { content_type: 'application/json; charset=utf-8',
         cookies:      prepare_cookies,
         user_agent:   'APIR-Ruby-Testing-Framework' }
@@ -125,7 +125,7 @@ module Apir
       with_logging { http_sender }
       raise report_data if raw_response.code > 500
       parse_json_response
-      #todo post_initialize documentation
+      # TODO: post_initialize documentation
       post_initialize
       self
     end
@@ -139,7 +139,7 @@ module Apir
     end
 
     def http_sender(timeout=120)
-      #todo default timeout management
+      # TODO: default timeout management
       @request_time = Time.now.utc
       req_opts      = { method:   @type,
                         url:      uri.to_s,

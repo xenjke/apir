@@ -2,4 +2,3 @@
 require 'apir/version'
 require 'apir/helpers'
 require 'apir/request'
-
