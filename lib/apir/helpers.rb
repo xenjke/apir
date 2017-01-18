@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Get difference between two dates
 #
 # @param [Date] time_from
