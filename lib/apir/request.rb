@@ -4,8 +4,6 @@ require 'http-cookie'
 require 'rest-client'
 require 'json'
 require 'date'
-# TODO: can active support be replaced for hash compact?
-require 'active_support/all'
 
 require 'apir/reporting'
 
