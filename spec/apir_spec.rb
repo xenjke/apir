@@ -1,11 +1,12 @@
+# frozen_string_literal: true
 require 'spec_helper'
 require 'webmock/rspec'
 require 'apir'
 
 WebMock.disable!
 
-valid_json_response_body = JSON.unparse({ response: { key: [1, 2, 3], key_object: { id: 2, string: 'string_value' } } })
-html_response            =<<END
+valid_json_response_body = JSON.unparse(response: { key: [1, 2, 3], key_object: { id: 2, string: 'string_value' } })
+html_response            = <<END
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,27 +36,21 @@ html_response            =<<END
 END
 no_response = nil
 
-requests = [
-    [200, 'https://200.contoso.com', valid_json_response_body],
-    [503, 'https://503.contoso.com', html_response],
-    [404, 'https://404.contoso.com', no_response],
-]
+requests = [[200, 'https://200.contoso.com', valid_json_response_body],
+            [503, 'https://503.contoso.com', html_response],
+            [404, 'https://404.contoso.com', no_response]]
 
 mirror_data = 'https://mirrored.com'
 
 RSpec.configure do |config|
   config.before(:each) do
     requests.each do |code, url, body|
-      stub_request(:any, url).
-          to_return(status: code, body: body)
+      stub_request(:any, url).to_return(status: code, body: body)
     end
 
-
-    stub_request(:any, /#{mirror_data}/).
-        to_return { |request| { body: request.body, headers: request.headers } }
+    stub_request(:any, /#{mirror_data}/).to_return { |request| { body: request.body, headers: request.headers } }
   end
 end
-
 
 describe Apir::Request do
   before(:all) do
@@ -74,7 +69,6 @@ describe Apir::Request do
     let(:current_url) { requests[0][1] }
 
     describe 'responds to' do
-
       it '#get!' do
         expect(request).respond_to?(:get!)
       end
@@ -94,7 +88,6 @@ describe Apir::Request do
       it 'post! returns self' do
         expect(request.get!).to eq(request)
       end
-
     end
 
     describe 'default properties' do
@@ -165,9 +158,7 @@ describe Apir::Request do
       it '#curl' do
         expect(request.curl).to include current_url
       end
-
     end
-
   end
 
   context '200 json response' do
@@ -189,7 +180,6 @@ describe Apir::Request do
       request.redo!
       expect(request.response).to eq JSON.parse(valid_json_response_body, symbolize_names: true)
     end
-
   end
 
   context '200 non-json response' do
@@ -208,7 +198,6 @@ describe Apir::Request do
       request.redo!
       expect(request.response).to eq JSON.parse(valid_json_response_body, symbolize_names: true)
     end
-
   end
 
   context '401' do
@@ -217,7 +206,6 @@ describe Apir::Request do
     it 'not raise exception' do
       expect { request.get! }.not_to raise_error
     end
-
   end
 
   context '503' do
@@ -226,7 +214,6 @@ describe Apir::Request do
     it 'raise exception' do
       expect { request.get! }.to raise_error(RuntimeError)
     end
-
   end
 
   describe 'cookies' do
@@ -263,18 +250,15 @@ describe Apir::Request do
       request.get!
       expect(request.cookies).to include('referrer' => 'test')
     end
-
   end
 
   describe 'uri' do
-
     it 'full url in initialize' do
       r      = Apir::Request.new(mirror_data)
       r.body = 'from init'
       r.post!
       expect(r.raw_response.body).to eq('from init')
     end
-
   end
 
   describe 'headers' do
@@ -294,10 +278,8 @@ describe Apir::Request do
 
       r = Apir::Request.new(mirror_data, headers: { header_key: 'header-value' })
       r.get!
-      expect(r.raw_response.headers).to include({ header_key: 'header-value' })
+      expect(r.raw_response.headers).to include(header_key: 'header-value')
     end
-
-
   end
 
   describe 'query string' do
@@ -305,16 +287,12 @@ describe Apir::Request do
 
     it 'empty qs params is not stripped' do
       request_params = { key: 'value', another_key: 'another_value', bool: nil }
-      stub_request(:any, current_url).
-          with(query: request_params).
-          to_return { |request| { body: 'OK' } }
+      stub_request(:any, current_url).with(query: request_params).to_return { { body: 'OK' } }
 
       request.query = request_params
       request.get!
       expect(request.raw_response).to eq('OK')
     end
-
-
   end
 
   describe 'timeout' do
@@ -324,7 +302,6 @@ describe Apir::Request do
       stub_request(:any, current_url).to_timeout
       expect { request.get! }.to raise_error(RuntimeError)
     end
-
   end
 
   describe 'post body types' do
@@ -377,7 +354,6 @@ describe Apir::Request do
       r.post!(:string)
       expect(r.raw_response.body).to eq(data.to_s)
     end
-
   end
 
   describe 'curl with post and cookies' do
@@ -434,7 +410,6 @@ describe Apir::Request do
       request.post!
       expect(request.response).to be(nil)
     end
-
   end
 
   describe 'authorisation' do
@@ -448,9 +423,8 @@ describe Apir::Request do
       request.authorisation = { login: login, password: password }
       base64_auth_string    = Base64.encode64("#{login}:#{password}")
       request.get!
-      expect(request.raw_response.headers).to include({ authorization: "Basic #{base64_auth_string.delete("\r\n")}" })
+      expect(request.raw_response.headers).to include(authorization: "Basic #{base64_auth_string.delete("\r\n")}")
     end
-
   end
 
   describe 'reporting' do
@@ -498,7 +472,7 @@ describe Apir::Request do
       stub_request(:any, current_url).to_return { |request| { body: request.body, headers: request.headers } }
       request.body = 'test'
       request.post!(:string)
-      expect(request.report_data).to include("TIME:")
+      expect(request.report_data).to include('TIME:')
       expect(request.report_data).to include(Time.now.utc.to_s)
     end
 
@@ -530,5 +504,4 @@ describe Apir::Request do
       expect(request.time_taken).to be_a(Numeric)
     end
   end
-
 end
