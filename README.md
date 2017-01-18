@@ -1,7 +1,6 @@
 [![Travis](https://travis-ci.org/xenjke/apir.svg?branch=master)](https://travis-ci.org/xenjke/apir)
 [![Coverage](https://coveralls.io/repos/github/xenjke/apir/badge.svg?branch=master)](https://coveralls.io/github/xenjke/apir?branch=master)
 
-
 # Apir
 
 Module and Request class to help building RequestObject testing framework
@@ -22,6 +21,8 @@ Or install it yourself as:
 
     $ gem install apir
 
+Lock the gem version strictly to be safe from my destructive actions.
+
 ## Usage
 
     request = Apir::Request.new
@@ -32,10 +33,40 @@ Or install it yourself as:
     request.cookie_jar # assert
     request.cookie_jar << HTTP::Cookie # modify
 
-    class MyRequest
+    class GetWeather
       include Apir::Request
-      # TODO: better class example
+      
+      def initialize(**args)
+        @url = 'https://weather.com'
+        super(@url, args)
+      end
+
+      def post_initialize
+        # hook to gain some control
+        # after the request execution
+        puts response # if JSON
+        puts raw_response.code # RestClient response object
+        @property = result
+      end
+
+      def result
+        # bind desired response data
+        response[:result] || {}
+      end
+
+      def sunny?(city)
+        self.query.merge!(cityName: city)
+        get!
+        sun_factor > 3
+      end
+
+      def sun_factor
+        result[:sunFactor]
+      end
+      
     end
+    request = GetWeather.new
+    request.sunny?('London')
 
 ## Development
 
