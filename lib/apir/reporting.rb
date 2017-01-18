@@ -1,5 +1,5 @@
 module Apir
-# reporting module
+  # reporting module
   module RequestReporting
     # reporting class
     class RequestReport
@@ -47,15 +47,14 @@ module Apir
       end
 
       def request_body
-        if @request && @request.body
-          case @request.body_type
-            when :form_data
-              @request.body
-            when :json
-              JSON.unparse(@request.body) rescue @request.body
-            else # as a string
-              @request.body.to_s
-          end
+        return nil unless @request && @request.body
+        case @request.body_type
+          when :form_data
+            @request.body
+          when :json
+            JSON.unparse(@request.body) rescue @request.body
+          else # as a string
+            @request.body.to_s
         end
       end
 

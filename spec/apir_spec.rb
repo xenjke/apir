@@ -485,7 +485,7 @@ describe Apir::Request do
       stub_request(:any, current_url).to_return { |request| { body: request.body, headers: request.headers } }
       request.body = 'test'
       request.post!(:string)
-      expect(request.report_data).to include("TIME:")
+      expect(request.report_data).to include('TIME:')
       expect(request.report_data).to include(Time.now.utc.to_s)
     end
 

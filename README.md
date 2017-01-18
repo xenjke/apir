@@ -34,7 +34,7 @@ Or install it yourself as:
 
     class MyRequest
       include Apir::Request
-      # todo better class example
+      # TODO: better class example
     end
 
 ## Development
