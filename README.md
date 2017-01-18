@@ -1,5 +1,6 @@
 [![Travis](https://travis-ci.org/xenjke/apir.svg?branch=master)](https://travis-ci.org/xenjke/apir)
 [![Coverage](https://coveralls.io/repos/github/xenjke/apir/badge.svg?branch=master)](https://coveralls.io/github/xenjke/apir?branch=master)
+[![Code Climate](https://codeclimate.com/github/xenjke/apir/badges/gpa.svg)](https://codeclimate.com/github/xenjke/apir)
 
 # Apir
 
