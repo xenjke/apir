@@ -410,6 +410,19 @@ describe Apir::Request do
       expect(request.curl).to include('referrer=curl_test')
       expect(request.curl).to include('"body_hash_key":"value"')
     end
+
+    it 'exact json curl' do
+      stub_request(:any, current_url).to_return { |request| { body: request.body, headers: request.headers } }
+      request.body = { my_key: 'value' }
+      request.cookie_jar << HTTP::Cookie.new(name:   'referrer', value: 'curl_test',
+                                             domain: '.curl.com',
+                                             path:   '/')
+      request.headers[:bitch_data] = 'your mom'
+      request.post!(:json)
+
+      expected_curl = %q(curl 'http://curl.com' -H 'bitch_data: your mom' -H 'cookie: referrer=curl_test;' --data '{"my_key":"value"}' -i)
+      expect(request.curl).to eq(expected_curl)
+    end
   end
 
   describe 'files attachments' do

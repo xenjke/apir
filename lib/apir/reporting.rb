@@ -94,7 +94,7 @@ module Apir
                       else
                         body.to_s
                     end
-      @body ? "--data \"#{body_string}\"" : ''
+      @body ? "--data '#{body_string}'" : ''
     end
   end
 end
