@@ -26,6 +26,7 @@ Lock the gem version strictly to be safe from my destructive actions.
 
 ## Usage
 
+```ruby
     request = Apir::Request.new
     request.query = { param: 'value' }
     request.get!
@@ -68,6 +69,7 @@ Lock the gem version strictly to be safe from my destructive actions.
     end
     request = GetWeather.new
     request.sunny?('London')
+```
 
 ## Development
 
