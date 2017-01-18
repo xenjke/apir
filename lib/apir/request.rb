@@ -8,6 +8,7 @@ require 'date'
 require 'apir/reporting'
 
 module Apir
+  DEFAULT_TIMEOUT = 120
   # request class callable as #new
   # or could be used as class extension
   class Request
@@ -123,7 +124,6 @@ module Apir
       with_logging { http_sender }
       raise report_data if raw_response.code > 500
       parse_json_response
-      # TODO: post_initialize documentation
       post_initialize
       self
     end
@@ -137,13 +137,12 @@ module Apir
     end
 
     def http_sender(timeout=120)
-      # TODO: default timeout management
       @request_time = Time.now.utc
       req_opts      = { method:   @type,
                         url:      uri.to_s,
                         payload:  prepare_body(@body, @body_type),
                         headers:  prepare_headers,
-                        timeout:  timeout,
+                        timeout:  timeout || Apir::DEFAULT_TIMEOUT,
                         user:     authorisation[:login],
                         password: authorisation[:password] }
       @raw_response = RestClient::Request.execute(req_opts) { |response, _request, _result| response }.force_encoding('UTF-8')
