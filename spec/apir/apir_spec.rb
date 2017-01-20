@@ -396,7 +396,7 @@ describe Apir::Request do
       request.headers[:bitch_data] = 'your mom'
       request.post!(:json)
 
-      expected_curl = %q(curl 'http://curl.com' -H 'bitch_data: your mom' -H 'cookie: referrer=curl_test;' --data '{"my_key":"value"}' -i)
+      expected_curl = %q(curl -X POST 'http://curl.com' -H 'bitch_data: your mom' -H 'cookie: referrer=curl_test;' --data '{"my_key":"value"}' -i)
       expect(request.curl).to eq(expected_curl)
     end
   end
@@ -502,6 +502,15 @@ describe Apir::Request do
       request.get!
       expect(request.request_time).not_to be_nil
       expect(request.time_taken).to be_a(Numeric)
+    end
+
+    it 'curl request type' do
+      stub_request(:any, current_url).to_return { |request| { body: request.body, headers: request.headers } }
+      request_types = [:get, :post, :put, :delete, :head]
+      request_types.each do |type|
+        request.execute!(type)
+        expect(request.curl).to include("curl -X #{type.to_s.upcase} ")
+      end
     end
   end
 end

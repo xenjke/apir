@@ -12,7 +12,7 @@ module Apir
   # request class callable as #new
   # or could be used as class extension
   class Request
-    include RequestReporting
+    include Reporting
 
     attr_accessor :params
     attr_accessor :type, :uri, :query, :headers, :method, :response, :body, :body_type

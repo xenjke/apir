@@ -47,7 +47,7 @@ class AuthorisationRequest < ::Apir::Request
   # the authorisation status
   # on every request made
   def post_initialize
-    puts "#{@login} is authorised" if authorised?
+    "#{@login} is authorised" if authorised?
   end
 
 end
