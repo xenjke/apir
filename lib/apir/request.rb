@@ -122,7 +122,7 @@ module Apir
 
     def send_request
       with_logging { http_sender }
-      raise report_data if raw_response.code > 500
+      raise report_data if raw_response.code >= 500
       parse_json_response
       post_initialize
       self
