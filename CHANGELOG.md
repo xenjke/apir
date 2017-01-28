@@ -19,6 +19,7 @@ A version bump, because
 - `#header` is now returning default headers included.
 Headers behaviour probably is unaffected but may be changed unintentionally.
 - `#curl` is now returning default headers as well.
+- `Apir::Request.present_cookie_jar` is now returning nil if no cookies given (was empty string)
 
 ### [0.0.3]
 ## Changed

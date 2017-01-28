@@ -85,7 +85,7 @@ module Apir
       cookies_array       = jar.to_a
       curl_cookies_string = cookies_array.map(&:to_s).join('; ')
       curl_cookies_string << ';' if cookies_array.size == 1
-      curl_cookies_string
+      curl_cookies_string.empty? ? nil : curl_cookies_string
     end
 
     def default_headers

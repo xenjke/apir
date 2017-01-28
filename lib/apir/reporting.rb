@@ -27,7 +27,9 @@ module Apir
       # to compete with standards cookiE
       headers_clone[:cookies] = nil
       headers_clone[:cookie]  = Apir::Request.present_cookie_jar(cookie_jar)
-      headers_clone.compact.map { |k, v| "-H '#{k}: #{v}'" unless v.empty? }.join(' ')
+      headers_clone.compact.map do |k, v|
+        "-H '#{k}: #{v}'"
+      end.join(' ')
     end
 
     def curl_make_body
