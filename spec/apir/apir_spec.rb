@@ -399,6 +399,11 @@ describe Apir::Request do
       expected_curl = %q(curl -X POST 'http://curl.com' -H 'bitch_data: your mom' -H 'cookie: referrer=curl_test;' --data '{"my_key":"value"}' -i)
       expect(request.curl).to eq(expected_curl)
     end
+
+    it 'no cookies in curl if no cookies' do
+      stub_request(:any, current_url).to_return { |request| { body: request.body, headers: request.headers } }
+      expect(request.curl).not_to include("-H 'cookie:")
+    end
   end
 
   describe 'files attachments' do
