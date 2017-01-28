@@ -118,7 +118,7 @@ module Apir
     #
     # def with_logging #<-- overridden one
     #   log(url, ">> #{@type}-request")
-    #   log(self.class.present_cookie_jar(@cookie_jar), '>> cookies-jar') unless @cookie_jar.cookies.empty?
+    #   log(request_cookies_string, '>> cookies-jar') unless @cookie_jar.cookies.empty?
     #   yield if block_given?
     #   log(response_cookies_string, '<< cookies') unless raw_response.cookies.empty?
     #   log("#{@raw_response.code}. #{@time_taken} ms.", '<< response')

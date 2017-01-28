@@ -12,6 +12,7 @@ A version bump, because
 ## Added
 - This changelog!
 - `#default_headers` override example and test
+- `#with_logging` override example
 
 ### Changed
 - `#headers` by default now includes `#default_headers`

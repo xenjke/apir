@@ -280,6 +280,15 @@ describe Apir::Request do
       r.get!
       expect(r.raw_response.headers).to include(header_key: 'header-value')
     end
+
+    it 'default_headers' do
+      stated_default_headers = {
+        content_type: 'application/json; charset=utf-8',
+        user_agent:   'APIR-Ruby-Testing-Framework'
+      }
+      expect(request.default_headers).not_to be_empty
+      expect(request.default_headers).not_to be_empty
+    end
   end
 
   describe 'query string' do
