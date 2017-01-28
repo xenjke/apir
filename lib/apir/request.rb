@@ -15,7 +15,7 @@ module Apir
     include Reporting
 
     attr_accessor :params
-    attr_accessor :type, :uri, :query, :headers, :method, :response, :body, :body_type
+    attr_accessor :type, :uri, :query, :method, :response, :body, :body_type
     attr_accessor :time_taken, :request_time
     attr_accessor :raw_request, :raw_response
     attr_accessor :cookie_jar
@@ -24,7 +24,7 @@ module Apir
     def initialize(request_url, **args)
       @method        = request_url
       @params        = args
-      @headers       = args[:headers] || {}
+      @headers       = args[:headers] || prepare_headers
       @query         = args[:query]
       @cookie_jar    = HTTP::CookieJar.new
       @authorisation = {}
@@ -62,6 +62,14 @@ module Apir
       cookies_array.to_h
     end
 
+    def headers
+      prepare_headers
+    end
+
+    def headers=(hash)
+      @headers = hash
+    end
+
     def uri
       uri              = Addressable::URI.parse(method)
       uri.query_values = @query
@@ -80,6 +88,14 @@ module Apir
       curl_cookies_string
     end
 
+    def default_headers
+      # TODO: content_type example
+      # TODO: user_agent example
+      { content_type: 'application/json; charset=utf-8',
+        cookies:      prepare_cookies, # cookieS here is foe RestClient, wrong S
+        user_agent:   'APIR-Ruby-Testing-Framework' }.compact
+    end
+
     private
 
     def prepare_cookies
@@ -87,15 +103,8 @@ module Apir
     end
 
     def prepare_headers
-      default_headers.merge(@headers)
-    end
-
-    def default_headers
-      # TODO: content_type example
-      # TODO: user_agent example
-      { content_type: 'application/json; charset=utf-8',
-        cookies:      prepare_cookies,
-        user_agent:   'APIR-Ruby-Testing-Framework' }
+      @headers ||= {}
+      @headers = default_headers.merge(@headers)
     end
 
     def parse_json_response
