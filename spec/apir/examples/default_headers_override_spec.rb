@@ -4,12 +4,6 @@ WebMock.disable!
 
 require 'apir'
 
-class Apir::Request
-  def default_headers
-    { overriden_header: true }
-  end
-end
-
 describe 'Headers override' do
   let(:json_response) { JSON.unparse({ status: "AUTHORISED" }) }
   # mocking network
@@ -24,13 +18,19 @@ describe 'Headers override' do
     WebMock.disable!
   end
 
-  it 'some basic assertions' do
+  it 'before initialize' do
     url = "https://headers_override.com"
     stub_request(:any, url).to_return { |request| { body: json_response, headers: request.headers } }
 
-    request = Apir::Request.new(url)
-    expect(request.headers).to be_empty
+    class RedifinedRequest < Apir::Request
+      def default_headers
+        { overriden_header: true }
+      end
+    end
+    request = RedifinedRequest.new(url)
+
     expect(request.default_headers).to eq(overriden_header: true)
+    expect(request.headers).to eq(request.default_headers)
     request.post!
     expect(request.raw_response.headers).to include(overriden_header: 'true')
   end
