@@ -15,7 +15,7 @@ module Apir
     include Reporting
 
     attr_accessor :params
-    attr_accessor :type, :uri, :query, :headers, :method, :response, :body, :body_type
+    attr_accessor :type, :uri, :query, :method, :response, :body, :body_type
     attr_accessor :time_taken, :request_time
     attr_accessor :raw_request, :raw_response
     attr_accessor :cookie_jar
@@ -24,7 +24,7 @@ module Apir
     def initialize(request_url, **args)
       @method        = request_url
       @params        = args
-      @headers       = args[:headers] || {}
+      @headers       = args[:headers] || prepare_headers
       @query         = args[:query]
       @cookie_jar    = HTTP::CookieJar.new
       @authorisation = {}
@@ -62,6 +62,14 @@ module Apir
       cookies_array.to_h
     end
 
+    def headers
+      prepare_headers
+    end
+
+    def headers=(hash)
+      @headers = hash
+    end
+
     def uri
       uri              = Addressable::URI.parse(method)
       uri.query_values = @query
@@ -77,7 +85,15 @@ module Apir
       cookies_array       = jar.to_a
       curl_cookies_string = cookies_array.map(&:to_s).join('; ')
       curl_cookies_string << ';' if cookies_array.size == 1
-      curl_cookies_string
+      curl_cookies_string.empty? ? nil : curl_cookies_string
+    end
+
+    def default_headers
+      # TODO: content_type example
+      # TODO: user_agent example
+      { content_type: 'application/json; charset=utf-8',
+        cookies:      prepare_cookies, # cookieS here is foe RestClient, wrong S
+        user_agent:   'APIR-Ruby-Testing-Framework' }.compact
     end
 
     private
@@ -87,15 +103,8 @@ module Apir
     end
 
     def prepare_headers
-      default_headers.merge(@headers)
-    end
-
-    def default_headers
-      # TODO: content_type example
-      # TODO: user_agent example
-      { content_type: 'application/json; charset=utf-8',
-        cookies:      prepare_cookies,
-        user_agent:   'APIR-Ruby-Testing-Framework' }
+      @headers ||= {}
+      @headers = default_headers.merge(@headers)
     end
 
     def parse_json_response
@@ -109,7 +118,7 @@ module Apir
     #
     # def with_logging #<-- overridden one
     #   log(url, ">> #{@type}-request")
-    #   log(self.class.present_cookie_jar(@cookie_jar), '>> cookies-jar') unless @cookie_jar.cookies.empty?
+    #   log(request_cookies_string, '>> cookies-jar') unless @cookie_jar.cookies.empty?
     #   yield if block_given?
     #   log(response_cookies_string, '<< cookies') unless raw_response.cookies.empty?
     #   log("#{@raw_response.code}. #{@time_taken} ms.", '<< response')

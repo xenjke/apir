@@ -104,7 +104,7 @@ describe Apir::Request do
       end
 
       it '#headers' do
-        expect(request.headers).to be_empty
+        expect(request.headers).to eq(request.default_headers)
       end
 
       it '#params' do
@@ -280,6 +280,15 @@ describe Apir::Request do
       r.get!
       expect(r.raw_response.headers).to include(header_key: 'header-value')
     end
+
+    it 'default_headers' do
+      stated_default_headers = {
+        content_type: 'application/json; charset=utf-8',
+        user_agent:   'APIR-Ruby-Testing-Framework'
+      }
+      expect(request.default_headers).not_to be_empty
+      expect(request.default_headers).not_to be_empty
+    end
   end
 
   describe 'query string' do
@@ -380,6 +389,7 @@ describe Apir::Request do
                                              domain: '.curl.com',
                                              path:   '/')
       request.headers[:bitch_data] = 'your mom'
+      expect(request.headers).to include(bitch_data: 'your mom')
       request.post!(:json)
       expect(request.curl).to include(current_url)
       expect(request.curl).to include("-H 'bitch_data: your mom'")
@@ -396,8 +406,23 @@ describe Apir::Request do
       request.headers[:bitch_data] = 'your mom'
       request.post!(:json)
 
-      expected_curl = %q(curl -X POST 'http://curl.com' -H 'bitch_data: your mom' -H 'cookie: referrer=curl_test;' --data '{"my_key":"value"}' -i)
+      expected_curl = %q(curl -X POST 'http://curl.com' -H 'content_type: application/json; charset=utf-8' -H 'user_agent: APIR-Ruby-Testing-Framework' -H 'bitch_data: your mom' -H 'cookie: referrer=curl_test;' --data '{"my_key":"value"}' -i)
       expect(request.curl).to eq(expected_curl)
+    end
+
+    it 'curl contains default headers' do
+      stub_request(:any, current_url).to_return { |request| { body: request.body, headers: request.headers } }
+      request.instance_eval do
+        def default_headers
+          { im_overriden: 'yes' }
+        end
+      end
+      expect(request.curl).to include("-H 'im_overriden: yes'")
+    end
+
+    it 'no cookies in curl if no cookies' do
+      stub_request(:any, current_url).to_return { |request| { body: request.body, headers: request.headers } }
+      expect(request.curl).not_to include("-H 'cookie:")
     end
   end
 
