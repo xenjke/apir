@@ -84,22 +84,3 @@ After checking out the repo, run `rake spec` or `rake` to run the tests.
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
-
-__________
-
-## Changelog
-
-### 0.0.1
-- initial commit
-
-### 0.0.2
-- travis
-- codestyle
-- coverage
-- reducing dependencies
-
-### 0.0.3
-- `#curl` and `#report_data` now returns request type i.e.: `-X GET`
-- RequestReporting -> Reporting (module renamed)
-- RequestReport -> Report (module renamed and moved)
