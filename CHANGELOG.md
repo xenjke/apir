@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet
 
-## [0.1.0] - 2017-28-01
+## [0.1.1] - 2017-02-05
+`@cookie_jar` small fix
+
+### Changed
+- `@cookie_jar` is now initializing a bit earlier, to make sure headers would not
+be generated with `nil` `@cookie_jar`
+
+## [0.1.0] - 2017-01-28
 A version bump, because of `#header` and `#default_header` behaviour changed.
 
 ## Added
