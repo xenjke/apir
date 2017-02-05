@@ -47,7 +47,7 @@ describe 'Headers override' do
     stub_request(:get, url).
       with(:headers => { 'Cookie' => 'auth_cookie=some_uid' }).
       to_return(:status => 200, :body => "", :headers => { 'Set-Cookie' => 'auth=session' })
-
+    
     class RedifinedCookieRequest < Apir::Request
       def some_condition
         true
@@ -61,15 +61,6 @@ describe 'Headers override' do
           path:   '/'
         )
       end
-
-      #   def prepare_cookies
-      #     puts 'prepating cookies overriden'
-      #     if some_condition
-      #       # @cookie_jar.add(some_cookie)
-      #     end
-      #     puts @cookie_jar.cookies
-      #     @cookie_jar
-      #   end
     end
 
     request        = RedifinedCookieRequest.new(url)
