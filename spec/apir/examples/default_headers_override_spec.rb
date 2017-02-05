@@ -34,4 +34,38 @@ describe 'Headers override' do
     request.post!
     expect(request.raw_response.headers).to include(overriden_header: 'true')
   end
+
+  # the case was that cookie_jar was not initialized
+  # when headers are already being constructed
+  it 'prepare cookies override' do
+    url = "https://prepare_cookies_override.com"
+    stub_request(:any, url).to_return { |request| { body: json_response, headers: request.headers } }
+
+    class RedifinedCookieRequest < Apir::Request
+      def some_condition
+        true
+      end
+
+      def some_cookie
+        HTTP::Cookie.new(
+          name:   'cookie_name',
+          value:  'cookie_value',
+          domain: '.prepare_cookies_override.com',
+          path:   '/'
+        )
+      end
+
+      def prepare_cookies
+        if some_condition
+          @cookie_jar.add(some_cookie)
+        end
+        @cookie_jar
+      end
+    end
+
+    request = RedifinedCookieRequest.new(url)
+
+    request.post!
+    expect(request.raw_response.cookies).to include('cookie_name' => 'cookie_value')
+  end
 end

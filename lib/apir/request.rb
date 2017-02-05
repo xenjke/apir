@@ -24,9 +24,9 @@ module Apir
     def initialize(request_url, **args)
       @method        = request_url
       @params        = args
+      @cookie_jar    = HTTP::CookieJar.new
       @headers       = args[:headers] || prepare_headers
       @query         = args[:query]
-      @cookie_jar    = HTTP::CookieJar.new
       @authorisation = {}
       @body          = args[:body]
     end
