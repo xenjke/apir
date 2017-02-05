@@ -17,15 +17,16 @@ module Apir
     end
 
     def report
-      { time:          request_time,
-        url:           url,
-        curl:          @request.curl,
-        headers:       headers,
-        cookies_sent:  cookies_sent,
-        request_body:  request_body,
-        response_code: response_code,
-        response_body: response_body,
-        message:       @message }
+      { time:             request_time,
+        url:              url,
+        curl:             @request.curl,
+        headers:          headers,
+        cookies_sent:     cookies_sent,
+        request_body:     request_body,
+        response_code:    response_code,
+        response_body:    response_body,
+        response_headers: response_headers,
+        message:          @message }
     end
 
     private
@@ -64,6 +65,10 @@ module Apir
 
     def response_body
       @response && @response.body
+    end
+
+    def response_headers
+      @response && @response.headers
     end
   end
 end

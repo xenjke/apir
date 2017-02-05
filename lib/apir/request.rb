@@ -104,7 +104,8 @@ module Apir
 
     def prepare_headers
       @headers ||= {}
-      @headers = default_headers.merge(@headers)
+      # default headers could be overriden
+      @headers.merge!(default_headers) { |key, v1, v2| key == :cookies ? v2 : v1 }
     end
 
     def parse_json_response
@@ -154,9 +155,12 @@ module Apir
                         timeout:  timeout || Apir::DEFAULT_TIMEOUT,
                         user:     authorisation[:login],
                         password: authorisation[:password] }
-      @raw_response = RestClient::Request.execute(req_opts) { |response, _request, _result| response }.force_encoding('UTF-8')
-      @raw_request  = @raw_response.request
-      @time_taken   = time_from(@request_time, Time.now.utc)
+      RestClient::Request.execute(req_opts) do |response, _request, _result|
+        @raw_response = response
+        @raw_request  = _request
+      end
+      # @raw_request  = @raw_response.request
+      @time_taken = time_from(@request_time, Time.now.utc)
     rescue RestClient::RequestTimeout => e
       message = "#{e}. #{timeout} seconds."
       raise report_data(message)
