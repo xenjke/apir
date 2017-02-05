@@ -156,7 +156,7 @@ module Apir
                         user:     authorisation[:login],
                         password: authorisation[:password] }
       RestClient::Request.execute(req_opts) do |response, _request, _result|
-        @raw_response = response
+        @raw_response = response.force_encoding('UTF-8')
         @raw_request  = _request
       end
       # @raw_request  = @raw_response.request
