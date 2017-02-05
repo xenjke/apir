@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 Nothing yet
 
 ## [0.1.0] - 2017-28-01
-A version bump, because
+A version bump, because of `#header` and `#default_header` behaviour changed.
+
 ## Added
 - This changelog!
 - `#default_headers` override example and test
