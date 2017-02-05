@@ -221,6 +221,7 @@ describe Apir::Request do
 
     it 'request cookies is a cookie jar' do
       expect(request.cookie_jar).to be_a(HTTP::CookieJar)
+      expect(request.cookie_jar.to_a.size).to eq(0)
       request.cookie_jar << HTTP::Cookie.new(name:   'referrer', value: 'test',
                                              domain: '.contoso.com',
                                              path:   '/')
@@ -228,8 +229,12 @@ describe Apir::Request do
     end
 
     it 'response cookies is a cookie jar' do
+      request.cookie_jar << HTTP::Cookie.new(name:   'referrer', value: 'test',
+                                             domain: '.contoso.com',
+                                             path:   '/')
       request.get!
       expect(request.raw_response.cookie_jar).to be_a(HTTP::CookieJar)
+      expect(request.raw_response.cookie_jar).not_to eql(request.raw_request.cookie_jar)
     end
 
     it 'cookies persists' do

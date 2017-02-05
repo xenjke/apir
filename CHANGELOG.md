@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet
 
+## [0.1.2] - 2017-02-05
+Fixed cookie merging bug, introduced in [0.1.0]
+
 ## [0.1.1] - 2017-02-05
+Found cookie merging bug, fixed in [0.1.2]
 `@cookie_jar` small fix
 
 ### Changed
