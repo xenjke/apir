@@ -27,7 +27,7 @@ module Apir
       @cookie_jar    = HTTP::CookieJar.new
       @headers       = args[:headers] || prepare_headers
       @query         = args[:query]
-      @authorisation = {}
+      @authorisation = args[:authorisation] || {}
       @body          = args[:body]
     end
 
