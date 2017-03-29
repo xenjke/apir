@@ -18,7 +18,7 @@ module Apir
     private
 
     def curl_make_auth
-      authorisation&.empty? ? '' : "-u #{authorisation[:login]}:#{authorisation[:password]}"
+      authorisation && authorisation.empty? ? '' : "-u #{authorisation[:login]}:#{authorisation[:password]}"
     end
 
     def curl_make_type
