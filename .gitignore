@@ -1,9 +1,5 @@
 /Gemfile.lock
 /coverage/
 
-### JetBrains ###
-
 # User-specific stuff:
-.idea/workspace.xml
-.idea/dictionaries
-.idea/vcs.xml
+.idea/*

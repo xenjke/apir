@@ -7,8 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet
 
+## [0.1.3] - 2017-03-29
+- Request authorisation credentials as intialize args
+- Request authorisation credentials in CURL
+- removed `.idea`
+- `.idea` in `.gitignore`
+
 ## [0.1.2] - 2017-02-05
-Fixed cookie merging bug, introduced in [0.1.0]
+- Fixed cookie merging bug, introduced in [0.1.0]
 
 ## Added
 - `response.headers` in reporting
