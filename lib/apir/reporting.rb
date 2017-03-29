@@ -11,11 +11,15 @@ module Apir
 
     # @return [String] request curl string
     def curl
-      curl_string = "curl #{curl_make_type} '#{url}' #{curl_make_headers} #{curl_make_body} -i"
+      curl_string = "curl #{curl_make_type} #{curl_make_auth} '#{url}' #{curl_make_headers} #{curl_make_body} -i"
       curl_string.gsub(/\s+/, ' ').strip
     end
 
     private
+
+    def curl_make_auth
+      authorisation && authorisation.empty? ? '' : "-u #{authorisation[:login]}:#{authorisation[:password]}"
+    end
 
     def curl_make_type
       @type ? "-X #{@type.upcase}" : ''

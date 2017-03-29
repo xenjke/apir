@@ -444,17 +444,42 @@ describe Apir::Request do
 
   describe 'authorisation' do
     let(:current_url) { 'http://auth.com' }
+    let(:credentials) { {login: 'dota',
+                         password: 'sniper'} }
 
     it 'passed as headers' do
       require 'base64'
       stub_request(:any, current_url).to_return { |request| { body: request.body, headers: request.headers } }
-      login                 = 'dota'
-      password              = 'sniper'
-      request.authorisation = { login: login, password: password }
-      base64_auth_string    = Base64.encode64("#{login}:#{password}")
+      request.authorisation = credentials
+      base64_auth_string    = Base64.encode64("#{credentials[:login]}:#{credentials[:password]}")
       request.get!
       expect(request.raw_response.headers).to include(authorization: "Basic #{base64_auth_string.delete("\r\n")}")
     end
+
+    it 'credentials are passed to request' do
+      stub = stub_request(:any, 'https://fdsgsdhsdfhdfhdfh.net').with(basic_auth: [credentials[:login], credentials[:password]])
+      request               = Apir::Request.new('https://fdsgsdhsdfhdfhdfh.net', authorisation: credentials)
+      request_types         = [:get, :post, :put, :delete, :head]
+      request_types.each do |type|
+        request.execute!(type)
+        expect(request.curl).to include("-u #{credentials[:login]}:#{credentials[:password]} ")
+      end
+      assert_requested(stub, times: request_types.size)
+    end
+
+    it 'curl auth present' do
+      stub_request(:any, current_url)
+      request.authorisation = credentials
+      request.get!
+      expect(request.curl).to include("-u #{credentials[:login]}:#{credentials[:password]} ")
+    end
+
+    it 'curl auth not present' do
+      stub_request(:any, current_url).to_return { |request| { body: request.body, headers: request.headers } }
+      request.get!
+      expect(request.curl).not_to include("-u")
+    end
+
   end
 
   describe 'reporting' do
