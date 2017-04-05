@@ -41,7 +41,7 @@ module Apir
       execute!(:get)
     end
 
-    def post!(body_type= :form_data)
+    def post!(body_type = :form_data)
       @body_type = body_type
       execute!(:post)
     end
@@ -91,9 +91,8 @@ module Apir
     def default_headers
       # TODO: content_type example
       # TODO: user_agent example
-      { content_type: 'application/json; charset=utf-8',
-        cookies:      prepare_cookies, # cookieS here is foe RestClient, wrong S, lowercase. Fixing this in reporting.rg
-        user_agent:   'APIR-Ruby-Testing-Framework' }.compact
+      { cookies:    prepare_cookies, # cookieS here is foe RestClient, wrong S, lowercase. Fixing this in reporting.rg
+        user_agent: 'APIR-Ruby-Testing-Framework' }.compact
     end
 
     private
@@ -148,13 +147,14 @@ module Apir
 
     def http_sender(timeout=120)
       @request_time = Time.now.utc
-      req_opts      = { method:   @type,
-                        url:      uri.to_s,
-                        payload:  prepare_body(@body, @body_type),
-                        headers:  prepare_headers,
-                        timeout:  timeout || Apir::DEFAULT_TIMEOUT,
-                        user:     authorisation[:login],
-                        password: authorisation[:password] }
+      req_opts      = { method:       @type,
+                        url:          uri.to_s,
+                        payload:      prepare_body(@body, @body_type),
+                        headers:      prepare_headers,
+                        timeout:      timeout || Apir::DEFAULT_TIMEOUT,
+                        user:         authorisation[:login],
+                        password:     authorisation[:password],
+                        content_type: @headers[:content_type] }
       RestClient::Request.execute(req_opts) do |response, _request, _result|
         @raw_response = response.force_encoding('UTF-8')
         @raw_request  = _request
@@ -171,10 +171,13 @@ module Apir
     def prepare_body(body, body_type)
       case body_type
         when :form_data
+          @headers[:content_type] ||= 'application/x-www-form-urlencoded'
           body
         when :json
+          @headers[:content_type] ||= 'application/json'
           JSON.unparse(body)
         else # as a string
+          @headers[:content_type] ||= 'text'
           body.to_s
       end
     end
