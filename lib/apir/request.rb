@@ -92,7 +92,7 @@ module Apir
       # TODO: content_type example
       # TODO: user_agent example
       { content_type: 'application/json; charset=utf-8',
-        cookies:      prepare_cookies, # cookieS here is foe RestClient, wrong S
+        cookies:      prepare_cookies, # cookieS here is foe RestClient, wrong S, lowercase. Fixing this in reporting.rg
         user_agent:   'APIR-Ruby-Testing-Framework' }.compact
     end
 

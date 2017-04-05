@@ -382,7 +382,7 @@ describe Apir::Request do
       request.headers[:bitch_data] = 'your mom'
       request.post!(:form_data)
       expect(request.curl).to include(current_url)
-      expect(request.curl).to include("-H 'bitch_data: your mom'")
+      expect(request.curl).to include("-H 'Bitch-Data: your mom'")
       expect(request.curl).to include('referrer=curl_test')
       expect(request.curl).to include('body_hash_key=value')
     end
@@ -397,7 +397,7 @@ describe Apir::Request do
       expect(request.headers).to include(bitch_data: 'your mom')
       request.post!(:json)
       expect(request.curl).to include(current_url)
-      expect(request.curl).to include("-H 'bitch_data: your mom'")
+      expect(request.curl).to include("-H 'Bitch-Data: your mom'")
       expect(request.curl).to include('referrer=curl_test')
       expect(request.curl).to include('"body_hash_key":"value"')
     end
@@ -411,7 +411,7 @@ describe Apir::Request do
       request.headers[:bitch_data] = 'your mom'
       request.post!(:json)
 
-      expected_curl = %q(curl -X POST 'http://curl.com' -H 'content_type: application/json; charset=utf-8' -H 'user_agent: APIR-Ruby-Testing-Framework' -H 'bitch_data: your mom' -H 'cookie: referrer=curl_test;' --data '{"my_key":"value"}' -i)
+      expected_curl = %q(curl -X POST 'http://curl.com' -H 'Content-Type: application/json; charset=utf-8' -H 'User-Agent: APIR-Ruby-Testing-Framework' -H 'Bitch-Data: your mom' -H 'Cookie: referrer=curl_test;' --data '{"my_key":"value"}' -i)
       expect(request.curl).to eq(expected_curl)
     end
 
@@ -422,7 +422,7 @@ describe Apir::Request do
           { im_overriden: 'yes' }
         end
       end
-      expect(request.curl).to include("-H 'im_overriden: yes'")
+      expect(request.curl).to include("-H 'Im-Overriden: yes'")
     end
 
     it 'no cookies in curl if no cookies' do
