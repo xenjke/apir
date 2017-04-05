@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet
 
+## [0.1.4] - 2017-04-05
+- Headers are now capitalized when printing CURL
+- Content-Type header is now overriding to comply with payload (RestClient warning fix)
+
 ## [0.1.3] - 2017-03-29
 - Request authorisation credentials as intialize args
 - Request authorisation credentials in CURL

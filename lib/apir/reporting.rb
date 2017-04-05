@@ -32,7 +32,9 @@ module Apir
       headers_clone[:cookies] = nil
       headers_clone[:cookie]  = Apir::Request.present_cookie_jar(cookie_jar)
       headers_clone.compact.map do |k, v|
-        "-H '#{k}: #{v}'"
+        header_name  = k.to_s.split(/[_|-]/).each(&:capitalize!).join('-')
+        header_value = v
+        "-H '#{header_name}: #{header_value}'"
       end.join(' ')
     end
 

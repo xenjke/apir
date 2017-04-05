@@ -62,14 +62,14 @@ describe 'Headers override' do
         )
       end
 
-      #   def prepare_cookies
-      #     puts 'prepating cookies overriden'
-      #     if some_condition
-      #       # @cookie_jar.add(some_cookie)
-      #     end
-      #     puts @cookie_jar.cookies
-      #     @cookie_jar
-      #   end
+        def prepare_cookies
+          puts 'preparing cookies overriden'
+          if some_condition
+            # @cookie_jar.add(some_cookie)
+          end
+          puts @cookie_jar.cookies
+          @cookie_jar
+        end
     end
 
     request        = RedifinedCookieRequest.new(url)

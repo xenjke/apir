@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'spec_helper'
 require 'webmock/rspec'
 require 'apir'
 
@@ -285,15 +284,6 @@ describe Apir::Request do
       r.get!
       expect(r.raw_response.headers).to include(header_key: 'header-value')
     end
-
-    it 'default_headers' do
-      stated_default_headers = {
-        content_type: 'application/json; charset=utf-8',
-        user_agent:   'APIR-Ruby-Testing-Framework'
-      }
-      expect(request.default_headers).not_to be_empty
-      expect(request.default_headers).not_to be_empty
-    end
   end
 
   describe 'query string' do
@@ -382,7 +372,7 @@ describe Apir::Request do
       request.headers[:bitch_data] = 'your mom'
       request.post!(:form_data)
       expect(request.curl).to include(current_url)
-      expect(request.curl).to include("-H 'bitch_data: your mom'")
+      expect(request.curl).to include("-H 'Bitch-Data: your mom'")
       expect(request.curl).to include('referrer=curl_test')
       expect(request.curl).to include('body_hash_key=value')
     end
@@ -397,7 +387,7 @@ describe Apir::Request do
       expect(request.headers).to include(bitch_data: 'your mom')
       request.post!(:json)
       expect(request.curl).to include(current_url)
-      expect(request.curl).to include("-H 'bitch_data: your mom'")
+      expect(request.curl).to include("-H 'Bitch-Data: your mom'")
       expect(request.curl).to include('referrer=curl_test')
       expect(request.curl).to include('"body_hash_key":"value"')
     end
@@ -411,7 +401,7 @@ describe Apir::Request do
       request.headers[:bitch_data] = 'your mom'
       request.post!(:json)
 
-      expected_curl = %q(curl -X POST 'http://curl.com' -H 'content_type: application/json; charset=utf-8' -H 'user_agent: APIR-Ruby-Testing-Framework' -H 'bitch_data: your mom' -H 'cookie: referrer=curl_test;' --data '{"my_key":"value"}' -i)
+      expected_curl = %q(curl -X POST 'http://curl.com' -H 'User-Agent: APIR-Ruby-Testing-Framework' -H 'Bitch-Data: your mom' -H 'Content-Type: application/json' -H 'Cookie: referrer=curl_test;' --data '{"my_key":"value"}' -i)
       expect(request.curl).to eq(expected_curl)
     end
 
@@ -422,7 +412,7 @@ describe Apir::Request do
           { im_overriden: 'yes' }
         end
       end
-      expect(request.curl).to include("-H 'im_overriden: yes'")
+      expect(request.curl).to include("-H 'Im-Overriden: yes'")
     end
 
     it 'no cookies in curl if no cookies' do
@@ -444,8 +434,8 @@ describe Apir::Request do
 
   describe 'authorisation' do
     let(:current_url) { 'http://auth.com' }
-    let(:credentials) { {login: 'dota',
-                         password: 'sniper'} }
+    let(:credentials) { { login:    'dota',
+                          password: 'sniper' } }
 
     it 'passed as headers' do
       require 'base64'
@@ -457,9 +447,9 @@ describe Apir::Request do
     end
 
     it 'credentials are passed to request' do
-      stub = stub_request(:any, 'https://fdsgsdhsdfhdfhdfh.net').with(basic_auth: [credentials[:login], credentials[:password]])
-      request               = Apir::Request.new('https://fdsgsdhsdfhdfhdfh.net', authorisation: credentials)
-      request_types         = [:get, :post, :put, :delete, :head]
+      stub          = stub_request(:any, 'https://fdsgsdhsdfhdfhdfh.net').with(basic_auth: [credentials[:login], credentials[:password]])
+      request       = Apir::Request.new('https://fdsgsdhsdfhdfhdfh.net', authorisation: credentials)
+      request_types = [:get, :post, :put, :delete, :head]
       request_types.each do |type|
         request.execute!(type)
         expect(request.curl).to include("-u #{credentials[:login]}:#{credentials[:password]} ")
@@ -566,6 +556,42 @@ describe Apir::Request do
         request.execute!(type)
         expect(request.curl).to include("curl -X #{type.to_s.upcase} ")
       end
+    end
+  end
+
+  describe 'default content type is changing with payload' do
+    # https://github.com/rest-client/rest-client/pull/578
+    let(:current_url) { 'https://content-type-payload.com' }
+
+    it 'but overridden content-type is persistent' do
+      stub_request(:post, current_url).with(headers: { 'Content-Type' => 'fml' })
+      request.body                   = { some: 'payload content type test' }
+      request.headers[:content_type] = 'fml'
+      request.post!(:json)
+      expect(request.headers[:content_type]).to eq('fml')
+      expect(WebMock).to have_requested(:post, current_url).
+          with(body:    '{"some":"payload content type test"}',
+               headers: { 'Content-Type' => 'fml' })
+    end
+
+    it 'application/json on json (default header)' do
+      stub_request(:post, current_url).with(headers: { 'Content-Type' => 'application/json' })
+      request.body = { some: 'payload content type test' }
+      request.post!(:json)
+      expect(request.headers[:content_type]).to eq('application/json')
+      expect(WebMock).to have_requested(:post, current_url).
+          with(body:    { "some" => "payload content type test" },
+               headers: { 'Content-Type' => 'application/json' })
+    end
+
+    it 'application/x-www-form-urlencoded with form data' do
+      stub_request(:post, current_url).with(headers: { 'Content-Type' => 'application/x-www-form-urlencoded' })
+      request.body = { some: 'hash' }
+      request.post!(:form_data)
+      expect(request.headers[:content_type]).to eq('application/x-www-form-urlencoded')
+      expect(WebMock).to have_requested(:post, current_url).
+          with(body:    'some=hash',
+               headers: { 'Content-Type' => 'application/x-www-form-urlencoded' })
     end
   end
 end
