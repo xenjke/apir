@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 Nothing yet
 
+## [0.1.5] - 2017-04-06
+- Apir version in default user-agent header
+
 ## [0.1.4] - 2017-04-05
 - Headers are now capitalized when printing CURL
 - Content-Type header is now overriding to comply with payload (RestClient warning fix)

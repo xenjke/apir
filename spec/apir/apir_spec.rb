@@ -284,6 +284,10 @@ describe Apir::Request do
       r.get!
       expect(r.raw_response.headers).to include(header_key: 'header-value')
     end
+
+    it 'version in User-Agent' do
+      expect(request.headers[:user_agent]).to include(Apir::VERSION)
+    end
   end
 
   describe 'query string' do
@@ -401,7 +405,7 @@ describe Apir::Request do
       request.headers[:bitch_data] = 'your mom'
       request.post!(:json)
 
-      expected_curl = %q(curl -X POST 'http://curl.com' -H 'User-Agent: APIR-Ruby-Testing-Framework' -H 'Bitch-Data: your mom' -H 'Content-Type: application/json' -H 'Cookie: referrer=curl_test;' --data '{"my_key":"value"}' -i)
+      expected_curl = %Q[curl -X POST 'http://curl.com' -H 'User-Agent: APIR-#{Apir::VERSION}-Ruby-Testing-Framework' -H 'Bitch-Data: your mom' -H 'Content-Type: application/json' -H 'Cookie: referrer=curl_test;' --data '{"my_key":"value"}' -i]
       expect(request.curl).to eq(expected_curl)
     end
 

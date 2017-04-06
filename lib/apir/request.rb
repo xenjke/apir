@@ -92,7 +92,7 @@ module Apir
       # TODO: content_type example
       # TODO: user_agent example
       { cookies:    prepare_cookies, # cookieS here is foe RestClient, wrong S, lowercase. Fixing this in reporting.rg
-        user_agent: 'APIR-Ruby-Testing-Framework' }.compact
+        user_agent: "APIR-#{Apir::VERSION}-Ruby-Testing-Framework" }.compact
     end
 
     private
