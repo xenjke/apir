@@ -288,6 +288,14 @@ describe Apir::Request do
     it 'version in User-Agent' do
       expect(request.headers[:user_agent]).to include(Apir::VERSION)
     end
+
+    it 'headers are mutating (not fixed)' do
+      stub_request(:get, current_url).with(headers: { 'Accept-Language': 'en-us'} )
+      arg_header = {'Accept-Language': 'en-us'}
+      request.headers = arg_header.clone # a workaround
+      request.get!
+      expect(arg_header).to eq({'Accept-Language': 'en-us'})
+    end
   end
 
   describe 'query string' do
