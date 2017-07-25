@@ -9,8 +9,15 @@ module Apir
       @message  = message
     end
 
-    def print_report
-      print = report.map do |k, v|
+    def print_report(options = {})
+      # find all options that match 'ignore_*' like 'ignore_response_body'
+      # and remove it from reporting
+      initial_report = report.clone
+      fields_to_remove = options.map{ |k,v| k.to_s.gsub('ignore_', '').to_sym if k.to_s.include?('ignore_') && v == true }
+
+      #  modifying initial report
+      fields_to_remove.each{ |f| initial_report.delete(f) }
+      print = initial_report.map do |k, v|
         "#{k.upcase}: '#{v}'" unless v.nil?
       end.compact.join("\r\n")
       "\r\n" + print

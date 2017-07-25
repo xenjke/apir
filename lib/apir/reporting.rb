@@ -5,8 +5,8 @@ module Apir
   # reporting module
   module Reporting
 
-    def report_data(message=nil)
-      Apir::Report.new(self, raw_response, message).print_report
+    def report_data(message=nil, options = {})
+      Apir::Report.new(self, raw_response, message).print_report(options)
     end
 
     # @return [String] request curl string

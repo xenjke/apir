@@ -569,6 +569,34 @@ describe Apir::Request do
         expect(request.curl).to include("curl -X #{type.to_s.upcase} ")
       end
     end
+
+    it 'ignored parts' do
+      # remove some report part
+      # i.e. 'response_body'
+      stub_request(:any, current_url).to_return { |request| { body: 'I should be hidden', headers: request.headers } }
+      request.get!
+      report = request.report_data('There should not be body of the response in report', ignore_response_body: true)
+      expect(report).not_to include('I should be hidden')
+    end
+
+    it 'ignored multiple parts' do
+      # remove some report parts
+      # i.e. 'response_body', 'time', url
+      stub_request(:any, current_url).to_return { |request| { body: 'I should be hidden', headers: request.headers } }
+      request.get!
+      ignored_fields = {
+        ignore_response_body: true,
+        ignore_url: true,
+        ignore_time: true,
+        ignore_response_code: false,
+      }
+      p report = request.report_data('Any message', ignored_fields)
+      expect(report).to include('CURL:')
+      expect(report).not_to include("'\r\nURL:'")
+      expect(report).not_to include('TIME:')
+      expect(report).not_to include('RESPONSE_BODY:')
+      expect(report).to include('RESPONSE_CODE:')
+    end
   end
 
   describe 'default content type is changing with payload' do
