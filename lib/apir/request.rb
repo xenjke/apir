@@ -46,6 +46,11 @@ module Apir
       execute!(:post)
     end
 
+    def patch!(body_type = :form_data)
+      @body_type = body_type
+      execute!(:patch)
+    end
+
     def execute!(type)
       @type = type.to_sym
       send_request
@@ -57,8 +62,8 @@ module Apir
     end
 
     def cookies
-      cookies_array = @cookie_jar.to_a.join(';').split(';').map { |c| c.split('=') }
-      cookies_array.each { |e| e[1] = '' if e.count == 1 }
+      cookies_array = @cookie_jar.to_a.join(';').split(';').map {|c| c.split('=')}
+      cookies_array.each {|e| e[1] = '' if e.count == 1}
       cookies_array.to_h
     end
 
@@ -91,7 +96,7 @@ module Apir
     def default_headers
       # TODO: content_type example
       # TODO: user_agent example
-      { cookies:    prepare_cookies, # cookieS here is foe RestClient, wrong S, lowercase. Fixing this in reporting.rg
+      { cookies: prepare_cookies, # cookieS here is foe RestClient, wrong S, lowercase. Fixing this in reporting.rg
         user_agent: "APIR-#{Apir::VERSION}-Ruby-Testing-Framework" }.compact
     end
 
@@ -104,7 +109,7 @@ module Apir
     def prepare_headers
       @headers ||= {}
       # default headers could be overriden
-      @headers.merge!(default_headers) { |key, v1, v2| key == :cookies ? v2 : v1 }
+      @headers.merge!(default_headers) {|key, v1, v2| key == :cookies ? v2 : v1}
     end
 
     def parse_json_response
@@ -130,7 +135,7 @@ module Apir
     end
 
     def send_request
-      with_logging { http_sender }
+      with_logging {http_sender}
       raise report_data if raw_response.code >= 500
       parse_json_response
       post_initialize

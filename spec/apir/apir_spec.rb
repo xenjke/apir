@@ -76,6 +76,10 @@ describe Apir::Request do
         expect(request).respond_to?(:post!)
       end
 
+      it '#patch!' do
+        expect(request).respond_to?(:patch!)
+      end
+
       it 'redo!' do
         expect(request).respond_to?(:redo!)
       end
